@@ -1,0 +1,44 @@
+{% extends "user/base.html" %}
+
+{% block placeholder %}
+{% load static %}
+<section class="course-section spad pb-0 mb-5">
+    <div class="course-warp">                         
+        <div class="row course-items-area">
+            <!-- course -->
+            {% if listLessonOnTimeOfTeacher %}
+                {% for lesson in listLessonOnTimeOfTeacher %}
+                    <div class="mix col-lg-3 col-md-4 col-sm-6 ">
+                        <a href="/polls/lesson/{{lesson.7}}">
+                            <div class="course-item">
+                                <div class="course-thumb set-bg" data-setbg="{%static  'user/img/courses/1.jpg'%}">
+                                </div>
+                                <div class="course-info">
+                                    <div class="course-text">
+                                        <h5 class="mb-3">{{lesson.3}}</h5>
+                                        <h5 class="mb-3" style="color: #d82a4e;">Lớp: {{lesson.2}}</h5> 
+                                        <p>
+                                            <span>
+                                                Thời gian bắt đầu:
+                                            &nbsp;  {{ lesson.5|date:'d/m/Y H:i' }}
+                                            </span>
+                                            <br/>
+                                            <span>
+                                                Thời gian kết thúc:
+                                                &nbsp;  {{ lesson.6|date:'d/m/Y H:i' }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="font-size: 32px;">Không có lịch học nào!</p>
+            {% endif %}  
+
+        </div>
+    </div>
+</section>
+{% endblock %}

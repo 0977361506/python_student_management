@@ -1,0 +1,107 @@
+{% extends "user/base.html" %}
+
+{% block placeholder %}
+{% load static %}
+<section class="single-course spad pb-0">
+		<div class="container">
+			<div class="course-meta-area">
+				<div class="row">
+					<div class="col-lg-10 offset-lg-1">
+				
+						<h3>{{infoLesson.3}}</h3>
+						<div class="course-metas">
+							<div class="course-meta">
+								<div class="course-author">
+									<div class="ca-pic set-bg" data-setbg="{%static  '{{infoLesson.9}}'%}"></div>
+									<h6>Giáo viên</h6>
+									<p>{{infoLesson.10}}</p>
+								</div>
+							</div>
+							<div class="course-meta">
+								<div class="cm-info">
+									<h6>Lớp học</h6>
+									<p>{{infoLesson.2}}</p>
+								</div>
+							</div>
+                            <div class="course-meta">
+								<div class="cm-info">
+									<h6>Tên môn học</h6>
+									<p>{{infoLesson.3}}</p>
+								</div>
+							</div>
+							<div class="course-meta">
+								<div class="cm-info">
+									<h6>Số lượng học viên</h6>
+									<p>{{numberStudentOfLession}}</p>
+								</div>
+							</div>
+							<div class="course-meta">
+								<div class="cm-info">
+									<h6>Thời gian bắt đầu</h6>
+									<p>
+                                        <span>
+                                         {{ infoLesson.5|date:'d/m/Y H:i' }}
+                                        </span>
+                                    </p>
+								</div>
+							</div>
+                            <div class="course-meta">
+								<div class="cm-info">
+									<h6>Thời gian kết thúc</h6>
+									<p>
+                                        <span>
+                                      {{ infoLesson.6|date:'d/m/Y H:i' }}
+                                        </span>
+                                    </p>
+								</div>
+							</div>
+						</div>
+				
+					</div>
+				</div>
+			</div>
+			<img src="{%static  'user/img/courses/1.jpg'%}" alt="" class="course-preview" style="width: 100%;">
+			<div class="row">
+				<div class="col-lg-10 offset-lg-1 course-list" style="margin-left:0px !important">
+					<div class="cl-item">
+						<h4>Miêu tả khóa học</h4>
+						<p>{{infoLesson.7}}</p>
+					</div>
+				</div>
+				<div  class="col-lg-12 offset-lg-1 course-list" style="margin-left:0px !important">
+					<h4 class="mb-5">Danh sách sinh viên</h4>
+					{% if listStudentOfLession %}
+					<table class="table table-hover text-nowrap">
+						<thead>
+						  <tr>
+							<th>Mã sinh viên</th>
+							<th>Tên sinh viên</th>
+							<th>Email</th>
+							<th>Số điện thoại</th>
+							<th>Địa chỉ</th>
+							<th>Trạng thái</th>
+						  </tr>
+						</thead>
+						<tbody>
+							{% for student in listStudentOfLession %}
+								<tr>
+									<td>{{student.5}}</td>
+									<td>{{student.9}}</td>
+									<td>{{student.8}}</td>
+									<td>{{student.11}}</td>
+									<td>{{student.10}}</td>
+									<td>
+										{{student.3}}
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					{% else %}
+					<h5 style="font-size: 32px; padding: 17px;">Không có sinh viên nào !</h5>
+					{% endif %}  
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

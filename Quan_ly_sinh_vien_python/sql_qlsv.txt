@@ -1,0 +1,63 @@
+use student_management;
+
+
+CREATE table User(
+id INT  AUTO_INCREMENT PRIMARY KEY,
+username nVARCHAR(100) NOT NULL,
+password nVARCHAR(100) NOT NULL,
+email nVARCHAR(100),
+fullname nvarchar(30),
+address nVARCHAR(100) ,
+phone nVARCHAR(100) ,
+image nVARCHAR(100),
+role nVARCHAR(100)
+);
+
+
+CREATE table Teacher(
+id INT  AUTO_INCREMENT PRIMARY KEY,
+codeTeacher nvarchar(30) NOT NULL,
+yearsOfExperience int ,
+idUser int not null,
+FOREIGN KEY (idUser) REFERENCES User(id)
+);
+
+CREATE table Student(
+id INT  AUTO_INCREMENT PRIMARY KEY,
+codeStudent nvarchar(30) NOT NULL,
+idUser int not null,
+FOREIGN KEY (idUser) REFERENCES User(id)
+);
+
+create table Subject (
+   id int AUTO_INCREMENT   primary key,
+   name nvarchar(255) , 
+   description text,
+   codeSubject nvarchar(255)
+);
+
+create table Classes (
+   id int AUTO_INCREMENT   primary key,
+   name nvarchar(255) , 
+   description text
+);
+
+create table Lesson (
+   id int AUTO_INCREMENT   primary key,
+   idClasses int not null , 
+   idSubject int not null ,
+   idTeacher int not null ,
+   timeStart datetime,
+   timeEnd datetime,
+   FOREIGN KEY (idTeacher) REFERENCES Teacher(id),
+   FOREIGN KEY (idClasses) REFERENCES Classes(id),
+   FOREIGN KEY (idSubject) REFERENCES Subject(id)
+);
+
+create table InforLession (  -- thông tin tiết học
+   id int AUTO_INCREMENT   primary key,
+   idStudent int not null , 
+   idLession int not null ,
+   FOREIGN KEY (idLession) REFERENCES Lesson(id),
+   FOREIGN KEY (idStudent) REFERENCES Student(id)
+);
