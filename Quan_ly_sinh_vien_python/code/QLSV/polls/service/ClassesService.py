@@ -20,3 +20,13 @@ def registerClasses(newClass) :
 
 def editClasses(idClass,name,description) :
     cursor.execute('''UPDATE classes SET name = %s,description=%s where id=%s''',[name,description,idClass])
+
+def getListClassesNotInTime(timeStart,timeEnd):
+    #example : "2022-05-27 03:14:07" and "2022-05-27 05:14:07"
+    sql = """ 
+    select * from classes where id not in (SELECT distinct(idClasses) FROM lesson where timeStart between %s and %s or
+    timeEnd between %s and %s)
+    """
+    cursor.execute(sql,[timeStart,timeEnd,timeStart,timeEnd])
+    rows = cursor.fetchall()
+    return rows

@@ -1,10 +1,10 @@
 import datetime
-from polls.models import User
+from polls.models import Inforlession, Lesson, Student, User
 from django.db import connections
 cursor = connections['default'].cursor()
 
-def getListLessonOnTimeOfTeacher(idTeacher,keySearch):
-    time = datetime.datetime.today().strftime('%d/%m/%Y')
+def getListLessonOnTimeOfTeacher(idTeacher,keySearch,time):
+    # time = datetime.datetime.today().strftime('%d/%m/%Y')
     # time test : "27/05/2022" ;  keySearch = "ối"
     sql = """
     SELECT lesson.idClasses,lesson.idSubject,classes.name as nameClasses,
@@ -19,9 +19,9 @@ def getListLessonOnTimeOfTeacher(idTeacher,keySearch):
     """
     if keySearch is not None:
         sql+="and subject.name like %s"
-        cursor.execute(sql,[idTeacher,"%d/%m/%Y","27/05/2022","%"+keySearch+"%"])
+        cursor.execute(sql,[idTeacher,"%d/%m/%Y",time,"%"+keySearch+"%"])
     else: 
-        cursor.execute(sql,[idTeacher,"%d/%m/%Y","27/05/2022"])
+        cursor.execute(sql,[idTeacher,"%d/%m/%Y",time])
     rows = cursor.fetchall()
     return rows
 
@@ -59,3 +59,18 @@ def getInforLesson(idLesson):
     cursor.execute(sql,[idLesson])
     result = cursor.fetchone()
     return result
+
+def addNewLesson(lesson,listIdStudent):
+    lesson.save()
+    newLessonInsert = Lesson.objects.all().last()
+    for idStudent in listIdStudent:
+        student = Student.objects.get(id=idStudent)
+        inforLesson = Inforlession(status_attendance="Chưa điểm danh",idlession=newLessonInsert, idstudent=student)
+        inforLesson.save()
+
+
+def getListSubject():
+    sql = """select * from subject """
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    return rows

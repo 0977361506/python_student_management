@@ -33,5 +33,8 @@ urlpatterns = [
     path('editStudentApi', views.editStudentApi, name='editStudentApi'),
     path('editTeacherApi', views.editTeacherApi, name='editTeacherApi'),
     path('editClassesApi', views.editClassesApi, name='editClassesApi'),
+    path('filterLessonByDateApi', views.filterLessonByDateApi, name='filterLessonByDateApi'),
+    path('getIdTeacherAndIdClassByDateApi', views.getIdTeacherAndIdClassByDateApi, name='getIdTeacherAndIdClassByDateApi'),
+    path('addNewLessonApi', views.addNewLessonApi, name='addNewLessonApi'),
 
 ]

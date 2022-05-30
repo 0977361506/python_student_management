@@ -3,96 +3,52 @@
 {% block placeholder %}
 {% load static %}
 <div class="content-wrapper mt-5">
+    {% csrf_token %}
     <section class="content">
-      <div class="container-fluid">
+      <div class="container-fluid pt-3">
         <div class="row">
             <div class="col-4">
                 <div class="card">
                     <div class="card-header">
-                      <h3 class="card-title">Fixed Header Table</h3>
+                      <h2 class="card-title">Danh sách sinh viên</h2>
                       <div class="card-tools">
-                        <div class="input-group input-group-sm" style="width: 150px;">
-                          <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                        <!-- <div class="input-group input-group-sm" style="width: 150px;">
+                          <input type="text" name="table_search" class="form-control float-right" placeholder="Tìm kiếm">
       
                           <div class="input-group-append">
                             <button type="submit" class="btn btn-default">
                               <i class="fas fa-search"></i>
                             </button>
                           </div>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0" style="height: 500px;">
+                      {% if listStudent %}
                       <table class="table table-head-fixed text-nowrap">
                         <thead>
                           <tr>
-                            <th>ID</th>
-                            <th>User</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Reason</th>
+                            <th><input type="checkbox" name="all" id="checkall"  /></th>
+                            <th>Mã sinh viên</th>
+                            <th>Tên sinh viên</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>183</td>
-                            <td>John Doe</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-success">Approved</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                          </tr>
-                          <tr>
-                            <td>219</td>
-                            <td>Alexander Pierce</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-warning">Pending</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                          </tr>
-                          <tr>
-                            <td>657</td>
-                            <td>Bob Doe</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-primary">Approved</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                          </tr>
-                          <tr>
-                            <td>175</td>
-                            <td>Mike Doe</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-danger">Denied</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                          </tr>
-                          <tr>
-                            <td>134</td>
-                            <td>Jim Doe</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-success">Approved</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                          </tr>
-                          <tr>
-                            <td>494</td>
-                            <td>Victoria Doe</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-warning">Pending</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                          </tr>
-                          <tr>
-                            <td>832</td>
-                            <td>Michael Doe</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-primary">Approved</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                          </tr>
-                          <tr>
-                            <td>982</td>
-                            <td>Rocky Doe</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-danger">Denied</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                          </tr>
+                   
+                            {% for student in listStudent %}
+                                <tr>
+                                    <td><input type="checkbox" class="cb-element" id="{{student.0}}" /></td>
+                                    <td>{{student.1}}</td>
+                                    <td>{{student.5}}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                       </table>
+                      {% else %}
+                      <h5 style="font-size: 32px; padding: 17px;">Không có bản ghi nào !</h5>
+                      {% endif %}  
+                     
                     </div>
                     <!-- /.card-body -->
                   </div>
@@ -101,55 +57,52 @@
                 <div class="row"> 
                     <div class="col col-sm-3">
                         <div class="form-group">
-                            <label>Thời gian bắt đầu:</label>
-                            <input type="datetime-local" id="birthdaytime" name="birthdaytime" class="form-control">
+                            <label style="margin-bottom: 36px;">Thời gian bắt đầu:</label>
+                            <input type="datetime-local" id="timeStart" name="timeStart" class="form-control" classtimeVadidate="#timeEnd" onchange="filterByDate(this)">
                         </div>
                     </div>
                     <div class="col col-sm-3">
                         <div class="form-group">
-                            <label>Thời gian kết thúc:</label>
-                            <input type="datetime-local" id="birthdaytime" name="birthdaytime" class="form-control">
+                            <label style="margin-bottom: 36px;">Thời gian kết thúc:</label>
+                            <input type="datetime-local" id="timeEnd" name="timeEnd" class="form-control" classtimeVadidate="#timeStart"  onchange="filterByDate(this)">
                         </div>
                     </div>
                     <div class="col col-sm-2">
                         <div class="form-group">
                             <label>Chọn lớp học:</label>
-                            <select class="form-control">
-                              <option>option 1</option>
-                              <option>option 2</option>
-                              <option>option 3</option>
-                              <option>option 4</option>
-                              <option>option 5</option>
+                            <p style="margin-bottom:10px !important;font-size:12px"><i style="color:red;">Vui lòng chọn khoảng thời gian!</i></p>
+                            <select class="form-control" id="classes">
+                              <option value="0">- Chọn lớp học -</option>
+                              <!-- <option value="1">- 1 -</option> -->
                             </select>
                         </div>
                     </div>
                     <div class="col col-sm-2">
                         <div class="form-group">
-                            <label>Chọn giáo viên:</label>
-                            <select class="form-control">
-                              <option>option 1</option>
-                              <option>option 2</option>
-                              <option>option 3</option>
-                              <option>option 4</option>
-                              <option>option 5</option>
+                          <label>Chọn giáo viên:</label>
+                          <p style="margin-bottom:10px !important;font-size:12px"><i style="color:red;">Vui lòng chọn khoảng thời gian!</i></p>
+                            <select class="form-control" id="teacher">
+                              <option value="0">- Chọn giáo viên -</option>
+                              <!-- <option value="1">- 1 -</option> -->
                             </select>
                         </div>
                     </div>
                     <div class="col col-sm-2">
                         <div class="form-group">
-                            <label>Chọn môn học:</label>
-                            <select class="form-control">
-                              <option>option 1</option>
-                              <option>option 2</option>
-                              <option>option 3</option>
-                              <option>option 4</option>
-                              <option>option 5</option>
+                            <label style="margin-bottom: 36px;">Chọn môn học:</label>
+                            <select class="form-control" id="subject">
+                              <option value="0">- Chọn môn học -</option>
+                              {% if listSubject %}
+                                {% for subject in listSubject %}
+                                  <option value="{{subject.0}}">{{subject.1}}</option>
+                                {% endfor %}
+                              {% endif %}  
                             </select>
                         </div>
                     </div>
                 </div>
                 <div class="row d-flex justify-content-center">
-                    <button class="btn btn-primary" type="button">Tạo mới</button>
+                    <button class="btn btn-primary" type="button" onclick="addLesson()">Tạo mới</button>
                 </div>
             </div>
           </div>
@@ -157,6 +110,20 @@
     </section>
     <!-- /.content -->
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script>
 
+    $('#checkall').change(function () {
+      $('.cb-element').prop('checked',this.checked);
+    });
+    $('.cb-element').change(function () {
+      if ($('.cb-element:checked').length == $('.cb-element').length){
+        $('#checkall').prop('checked',true);
+      }
+      else {
+        $('#checkall').prop('checked',false);
+      }
+    });
 
+</script>
 {% endblock %}

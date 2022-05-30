@@ -56,3 +56,16 @@ def editUser(idUser,username,fullname,phone,email,address,image) :
     else:
         cursor.execute('''UPDATE user SET username = %s,fullname=%s,phone=%s,email=%s,address=%s,image=%s
          where id=%s''',[username,fullname,phone,email,address,image,idUser])
+
+def getListTeacherNotInTime(timeStart,timeEnd):
+    #example : "2022-05-27 03:14:07" and "2022-05-27 05:14:07"
+    sql = """
+    select temp1.id as idTeacher, user.fullname
+    from (select * from teacher where id not in (SELECT distinct(idTeacher) FROM lesson where timeStart between %s and %s or
+    timeEnd between %s and %s)) as temp1 
+    left join user
+    on temp1.idUser = user.id
+    """
+    cursor.execute(sql,[timeStart,timeEnd,timeStart,timeEnd])
+    rows = cursor.fetchall()
+    return rows

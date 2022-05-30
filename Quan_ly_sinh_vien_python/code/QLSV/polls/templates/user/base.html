@@ -48,10 +48,13 @@
 				</div>
 				<div class="col-lg-9 col-md-9">
 					<div class="d-flex justify-content-end">
-						<a href="#" id="teacher_current" idTeacher="" idUser="" onClick="showDetailTeacher(this)">
-							<img src="{%static  'user/img/logo.png'%}" id="img-teacher-current" class="mr-3" style="border-radius: 50%;
-							width: 50px;
-							height: 50px;"/>
+						<a href="#" id="teacher_current" idTeacher="" idUser="" onClick="showDetailTeacher(this)" class="mr-4">
+							<div class="d-flex">
+								<img src="{%static  'user/img/logo.png'%}" id="img-teacher-current" class="mr-3" style="border-radius: 50%;
+								width: 50px;
+								height: 50px;"/>
+								<p style="padding-top: 10px;" id="name_user_current">Lê thế hiêu</p>
+							</div>
 						</a>
 						<a href="#" class="site-btn header-btn" onclick="logout()">Đăng xuất</a>
 					</div>
@@ -263,6 +266,7 @@
     <script src="{%static 'user/js/circle-progress.min.js'%}"></script> 
     <script src="{%static 'user/js/owl.carousel.min.js'%}"></script>
     <script src="{%static 'user/js/main.js'%}"></script> 
+	<script src="{%static 'user/js/index.js'%}"></script> 
 	<script src="{%static  'admin/dist/js/teacher.js'%}"></script>
 	<script src="{%static  'admin/dist/js/student.js'%}"></script>
 	<script>
@@ -271,6 +275,7 @@
 			console.log("userInfo[3]",userInfo)
 			$("#teacher_current").attr("idUser",userInfo[2])
 			$("#teacher_current").attr("idTeacher",userInfo[4])
+			$("#name_user_current").html(userInfo[0])
 			$("#img-teacher-current").attr("src","/static/"+userInfo[1])
 			if(userInfo[3]!=="TEACHER") {
 			alert("Tài khoản không có quyền truy cập !")

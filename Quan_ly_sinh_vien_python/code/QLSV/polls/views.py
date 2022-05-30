@@ -1,21 +1,24 @@
+import datetime
 import json
 from tkinter.messagebox import NO
 import bcrypt
 from django.http import HttpResponse
 from django.shortcuts import render
+from polls.dto.listDTO import ObjectDTO, ObjectDTOEncoder
 
-from polls.models import Classes, Student, Teacher, User
-from polls.service.ClassesService import editClasses, getListClasses
-from polls.service.LessonService import countNumberStudentByIdLesson, getInforLesson, getListLessonOnTimeOfTeacher, getListStudentOfLession
-from polls.service.UserService import editStudent, editTeacher, editUser, getListStudent, getListTeacher, registerStudent, registerTeacher
+from polls.models import Classes, Lesson, Student, Subject, Teacher, User
+from polls.service.ClassesService import editClasses, getListClasses, getListClassesNotInTime
+from polls.service.LessonService import addNewLesson, countNumberStudentByIdLesson, getInforLesson, getListLessonOnTimeOfTeacher, getListStudentOfLession, getListSubject
+from polls.service.UserService import editStudent, editTeacher, editUser, getListStudent, getListTeacher, getListTeacherNotInTime, registerStudent, registerTeacher
 
 
 
 def index(request):
     userinfo  = request.session.get('userinfo')
+    time = datetime.datetime.today().strftime('%d/%m/%Y')
     if(userinfo) :
         idUser = userinfo[2]
-        listLessonOnTimeOfTeacher = getListLessonOnTimeOfTeacher(idUser,None)
+        listLessonOnTimeOfTeacher = getListLessonOnTimeOfTeacher(idUser,None,time)
         return render(request,"user/index.html",{"listLessonOnTimeOfTeacher":listLessonOnTimeOfTeacher})
     else :
         return render(request,"others/login.html")
@@ -86,9 +89,10 @@ def search(request) :
     if request.method == 'POST':
         key=request.POST['key']
         userinfo  = request.session.get('userinfo')
+        time = datetime.datetime.today().strftime('%d/%m/%Y')
         if(userinfo) :
             idUser = userinfo[2]
-            listLessonOnTimeOfTeacher = getListLessonOnTimeOfTeacher(idUser,key)
+            listLessonOnTimeOfTeacher = getListLessonOnTimeOfTeacher(idUser,key,time)
             return render(request,"user/index.html",{"listLessonOnTimeOfTeacher":listLessonOnTimeOfTeacher})
         else :
             return render(request,"others/login.html")
@@ -104,7 +108,9 @@ def detailLesson(request,id) :
     return render(request,"others/login.html")
 
 def addLesson(request):
-    return render(request,"admin/addLessonView.html")
+    listStudent = getListStudent(None)
+    listSubject = getListSubject()
+    return render(request,"admin/addLessonView.html",{"listStudent":listStudent,"listSubject":listSubject})
 
 
 
@@ -123,7 +129,7 @@ def loginApi(request) :
             password_db = user_login[0].password[2:len(user_login[0].password)-1]
             if bcrypt.checkpw(password.encode('utf-8') ,password_db.encode('utf-8')):
                 userinfo = []
-                userinfo.append(user_login[0].username)
+                userinfo.append(user_login[0].fullname)
                 userinfo.append(user_login[0].image)
                 userinfo.append(user_login[0].id)
                 userinfo.append(user_login[0].role)
@@ -320,5 +326,63 @@ def detailClassesApi(request) :
     classInfor.append(idClass) #1
     # userinfo.append(user[0].password)
     return  HttpResponse(json.dumps(classInfor), content_type="application/json") 
+
+def filterLessonByDateApi(request) :
+    dateFilter = request.GET['date']
+    userinfo  = request.session.get('userinfo')
+    if(userinfo) :
+        idUser = userinfo[2]
+        listLessonOnTimeOfTeacher = getListLessonOnTimeOfTeacher(idUser,None,dateFilter)
+        return  HttpResponse(json.dumps(listLessonOnTimeOfTeacher,default=str), content_type="application/json") 
+    else :
+        return render(request,"others/login.html")
+
+
+def addNewLessonApi(request):
+    if request.method == "GET":
+        return render(request,"others/login.html")
+    else:
+        # try:
+        #     idClasses = request.POST['classes']
+        #     idTeacher = request.POST['teacher']
+        #     idSubject = request.POST['subject']
+        #     timeStart = request.POST['timeStart']
+        #     timeEnd = request.POST['timeEnd']
+        #     listIdStudent = request.POST['listIdStudent']
+        #     lesson = Lesson(idclasses=idClasses,idteacher=idTeacher,idsubject=idSubject,timestart=timeStart,timeend=timeEnd,description="Thêm mới tiết học thành công!")
+        #     addNewLesson(lesson,listIdStudent)
+        #     return  HttpResponse("200", content_type="application/json")
+        # except:
+        #     return  HttpResponse("500", content_type="application/json")
+        idClasses = request.POST['classes']
+        idTeacher = request.POST['teacher']
+        idSubject = request.POST['subject']
+        timeStart = request.POST['timeStart']
+        timeEnd = request.POST['timeEnd']
+        listIdStudent = request.POST['listIdStudent']
+        classes = Classes.objects.get(id=idClasses)
+        teacher = Teacher.objects.get(id=idTeacher)
+        subject = Subject.objects.get(id=idSubject)
+        lesson = Lesson(idclasses=classes,idteacher=teacher,idsubject=subject,timestart=timeStart,timeend=timeEnd,description="Thêm mới tiết học thành công!")
+        addNewLesson(lesson,listIdStudent.split(","))
+        return  HttpResponse("200", content_type="application/json")
+
+def getIdTeacherAndIdClassByDateApi(request):
+    try:
+        # example "2022-05-27 03:14:07" and "2022-05-27 05:14:07"
+        timeStart = request.GET['timeStart']
+        timeEnd = request.GET['timeEnd']
+        # listClass = getListClassesNotInTime("2022-05-27 03:14:07","2022-05-27 05:14:07")
+        # listTeacher = getListTeacherNotInTime("2022-05-27 03:14:07","2022-05-27 05:14:07")
+        listClass = getListClassesNotInTime(timeStart,timeEnd)
+        listTeacher = getListTeacherNotInTime(timeStart,timeEnd)
+        objectDto = ObjectDTO(listTeacher,listClass)
+        print(listClass)
+        print(listTeacher)
+        return  HttpResponse(json.dumps(objectDto,cls=ObjectDTOEncoder), content_type="application/json") 
+    except:
+        return  HttpResponse("500", content_type="application/json")
+
+
 ##############################################
 

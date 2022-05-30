@@ -64,9 +64,6 @@ function editStudent(){
         data.append("idUser",idUser) 
     	data.append("csrfmiddlewaretoken", csrf_token);
         data.append("codeStudent",codeStudent)
-        for (var pair of data.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]); 
-        }
         $.ajax({
             url: '/polls/editStudentApi',
             method:'Post',
