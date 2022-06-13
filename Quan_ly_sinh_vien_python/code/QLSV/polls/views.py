@@ -15,9 +15,11 @@ from polls.service.UserService import editStudent, editTeacher, editUser, getLis
 
 def index(request):
     userinfo  = request.session.get('userinfo')
-    time = datetime.datetime.today().strftime('%d/%m/%Y')
+    time = datetime.datetime.today().strftime('%Y/%m/%d')
     if(userinfo) :
         idUser = userinfo[2]
+        print(idUser)
+        print(time)
         listLessonOnTimeOfTeacher = getListLessonOnTimeOfTeacher(idUser,None,time)
         return render(request,"user/index.html",{"listLessonOnTimeOfTeacher":listLessonOnTimeOfTeacher})
     else :

@@ -15,13 +15,13 @@ def getListLessonOnTimeOfTeacher(idTeacher,keySearch,time):
     lesson.idClasses=classes.id 
     and lesson.idSubject = subject.id
     and lesson.idTeacher = teacher.id
-    and DATE_FORMAT(lesson.timeStart, %s) = %s
+    and ( date(lesson.timeStart)<= %s and date(lesson.timeEnd) >=%s)
     """
     if keySearch is not None:
         sql+="and subject.name like %s"
-        cursor.execute(sql,[idTeacher,"%d/%m/%Y",time,"%"+keySearch+"%"])
+        cursor.execute(sql,[idTeacher,time,time,"%"+keySearch+"%"])
     else: 
-        cursor.execute(sql,[idTeacher,"%d/%m/%Y",time])
+        cursor.execute(sql,[idTeacher,time,time])
     rows = cursor.fetchall()
     return rows
 

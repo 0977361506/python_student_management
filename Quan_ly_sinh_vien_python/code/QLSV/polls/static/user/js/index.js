@@ -1,5 +1,6 @@
 function filterLessonByDate(e){
     let dateFormat = convertDate($(e).val())
+    console.log(dateFormat)
     $.ajax({
         url: '/polls/filterLessonByDateApi?date='+dateFormat,
         method:'GET',
@@ -53,7 +54,7 @@ function filterLessonByDate(e){
 
 function convertDate(dateInput){
     let arrayElementTime = dateInput.split("-")
-    return arrayElementTime[2]+"/"+arrayElementTime[1]+"/"+arrayElementTime[0];
+    return arrayElementTime[0]+"/"+arrayElementTime[1]+"/"+arrayElementTime[2];
 }
 
 function convertDateTime(datetime){
@@ -64,6 +65,5 @@ function convertDateTime(datetime){
     dateConvert.getFullYear() + " " +
     ("00" + dateConvert.getHours()).slice(-2) + ":" +
     ("00" + dateConvert.getMinutes()).slice(-2)
-    console.log(dateStr);
     return dateStr
 }
