@@ -16,8 +16,12 @@ from polls.service.UserService import editStudent, editTeacher, editUser, getLis
 def index(request):
     userinfo  = request.session.get('userinfo')
     time = datetime.datetime.today().strftime('%Y/%m/%d')
+    idUser = None
     if(userinfo) :
-        idUser = userinfo[2]
+        if userinfo[4] is None:
+            idUser = userinfo[2]
+        else:
+            idUser = userinfo[4]
         print(idUser)
         print(time)
         listLessonOnTimeOfTeacher = getListLessonOnTimeOfTeacher(idUser,None,time)
@@ -82,6 +86,7 @@ def login(request):
 def logout(request):
     userinfo  = request.session.get('userinfo')
     if(userinfo) :
+        print("vô đây")
         del request.session['userinfo']
         return render(request,"others/login.html")
     return render(request,"others/login.html")
@@ -138,6 +143,7 @@ def loginApi(request) :
                 if (user_login[0].role=="TEACHER"):
                     teacher_login = Teacher.objects.filter(iduser=user_login[0].id)
                     userinfo.append(teacher_login[0].id)
+                print(userinfo)
                 request.session['userinfo'] = userinfo
                 return  HttpResponse(json.dumps(userinfo), content_type="application/json") 
             else :  return  HttpResponse("500", content_type="application/json") 
