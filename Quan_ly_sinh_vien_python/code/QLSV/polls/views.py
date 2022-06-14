@@ -98,7 +98,7 @@ def search(request) :
         userinfo  = request.session.get('userinfo')
         time = datetime.datetime.today().strftime('%d/%m/%Y')
         if(userinfo) :
-            idUser = userinfo[2]
+            idUser = userinfo[4]
             listLessonOnTimeOfTeacher = getListLessonOnTimeOfTeacher(idUser,key,time)
             return render(request,"user/index.html",{"listLessonOnTimeOfTeacher":listLessonOnTimeOfTeacher})
         else :
@@ -339,7 +339,7 @@ def filterLessonByDateApi(request) :
     dateFilter = request.GET['date']
     userinfo  = request.session.get('userinfo')
     if(userinfo) :
-        idUser = userinfo[2]
+        idUser = userinfo[4]
         listLessonOnTimeOfTeacher = getListLessonOnTimeOfTeacher(idUser,None,dateFilter)
         return  HttpResponse(json.dumps(listLessonOnTimeOfTeacher,default=str), content_type="application/json") 
     else :
